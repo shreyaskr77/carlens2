@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f3d4c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<title>CarLens</title>
+<style>
+:root{--bg:#eef1f5;--surface:#fff;--ink:#14212b;--muted:#5d6b78;--line:#dbe1e8;--brand:#0f3d4c;--brand-2:#1b6b82;--accent:#4fb3cf;--danger:#b3261e;--swatch:#c7ced6;--shadow:0 1px 2px rgba(15,61,76,.06),0 8px 24px rgba(15,61,76,.08);
+--font:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1218;--surface:#15202a;--ink:#e8eef3;--muted:#93a2af;--line:#243440;--brand:#4fb3cf;--brand-2:#2c8aa6;--shadow:0 8px 24px rgba(0,0,0,.35)}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+.top{background:linear-gradient(135deg,#0f3d4c,#1b6b82);color:#fff;padding:calc(env(safe-area-inset-top) + 16px) 20px 64px;border-radius:0 0 28px 28px}
+.top .in{max-width:520px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px}.logo{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:18px}
+h1{font-size:20px;margin:0;font-weight:700;letter-spacing:-.2px}.sub{font-size:12px;opacity:.75}
+.gear{border:0;background:rgba(255,255,255,.16);color:#fff;width:40px;height:40px;border-radius:12px;font-size:18px;cursor:pointer}
+.wrap{max-width:520px;margin:-44px auto 0;padding:0 16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+.stage{position:relative;aspect-ratio:4/3;border-radius:22px;overflow:hidden;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.vf i{position:absolute;width:26px;height:26px;border:3px solid var(--accent);opacity:.9}
+.vf i:nth-child(1){top:14px;left:14px;border-right:0;border-bottom:0;border-radius:8px 0 0 0}
+.vf i:nth-child(2){top:14px;right:14px;border-left:0;border-bottom:0;border-radius:0 8px 0 0}
+.vf i:nth-child(3){bottom:14px;left:14px;border-right:0;border-top:0;border-radius:0 0 0 8px}
+.vf i:nth-child(4){bottom:14px;right:14px;border-left:0;border-top:0;border-radius:0 0 8px 0}
+.empty{text-align:center;color:var(--muted);padding:24px;z-index:1}.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:4px}
+.scan{position:absolute;inset:0;display:none;background:linear-gradient(180deg,transparent 45%,rgba(79,179,207,.4) 50%,transparent 55%);background-size:100% 300%;animation:scan 1.4s linear infinite}
+@keyframes scan{from{background-position:0 100%}to{background-position:0 -100%}}
+@media (prefers-reduced-motion:reduce){.scan{animation:none;background:rgba(79,179,207,.15)}}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 10px}
+.btn{font:inherit;font-weight:600;border-radius:14px;padding:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;transition:transform .08s}
+.btn:active{transform:scale(.98)}.primary{background:var(--brand);color:#fff;border-color:var(--brand);width:100%;box-shadow:var(--shadow)}
+@media (prefers-color-scheme:dark){.primary{color:#0b1218}}
+.btn:disabled{opacity:.45}.btn:focus-visible,input:focus-visible,.tab:focus-visible{outline:3px solid var(--brand-2);outline-offset:2px}
+.error{display:none;background:rgba(179,38,30,.1);color:var(--danger);border:1px solid var(--danger);padding:12px;border-radius:12px;margin-top:12px;font-size:14px}
+.result{display:none;margin-top:16px;overflow:hidden}.result .band{height:10px;background:var(--swatch)}.result .body{padding:20px}
+.make{color:var(--muted);font-size:14px}.model{font-size:30px;font-weight:800;letter-spacing:-.6px;margin:2px 0 14px;line-height:1.1}
+.colorrow{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:16px}
+.dot{width:40px;height:40px;border-radius:50%;background:var(--swatch);border:3px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.tile{border:1px solid var(--line);border-radius:14px;padding:10px 12px}.tile span{display:block;font-size:12px;color:var(--muted)}.tile b{font-size:15px}
+.conf{height:6px;background:var(--line);border-radius:6px;margin-top:16px;overflow:hidden}.conf i{display:block;height:100%;background:linear-gradient(90deg,var(--brand-2),var(--accent))}
+h3{font-size:14px;margin:20px 0 8px}
+.alt{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:14px}.alt em{font-style:normal;color:var(--muted)}
+.rowbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.note{color:var(--muted);font-size:12px;margin-top:12px}
+.hist{display:none}.hitem{display:flex;gap:12px;align-items:center;padding:10px;margin-bottom:10px;cursor:pointer}
+.hitem img{width:72px;height:54px;object-fit:cover;border-radius:10px;flex:none}.hitem .t{flex:1;min-width:0}.hitem b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hitem small{color:var(--muted)}
+.hitem .sw{width:14px;height:14px;border-radius:50%;flex:none;border:1px solid var(--line)}
+.del{border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;padding:6px}
+.hh{display:flex;justify-content:space-between;align-items:center;margin:8px 4px 12px}.hh h2{margin:0;font-size:18px}
+.link{border:0;background:none;color:var(--brand-2);font:inherit;font-weight:600;cursor:pointer}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:8px 16px calc(8px + env(safe-area-inset-bottom));display:flex;gap:8px;justify-content:center}
+.tab{flex:1;max-width:240px;border:0;background:none;color:var(--muted);font:inherit;font-size:12px;font-weight:600;padding:8px;border-radius:12px;cursor:pointer}
+.tab span{display:block;font-size:20px}.tab[aria-selected=true]{color:var(--brand);background:rgba(79,179,207,.14)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;display:none;z-index:9}
+dialog{border:1px solid var(--line);border-radius:22px;background:var(--surface);color:var(--ink);width:min(92vw,440px);padding:20px}dialog::backdrop{background:rgba(0,0,0,.5)}
+label{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px}
+input[type=password],input[type=text]{width:100%;font:inherit;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.row{display:flex;gap:10px;margin-top:18px}.row .btn{flex:1}
+</style>
+</head>
+<body>
+<div class="top"><div class="in">
+  <div class="brand"><div class="logo">◎</div><div><h1>CarLens</h1><div class="sub">Identify any car in seconds</div></div></div>
+  <button class="gear" id="openSettings" aria-label="Settings">⚙</button>
+</div></div>
+
+<main class="wrap">
+  <section id="scanView">
+    <div class="stage">
+      <div class="empty" id="empty"><b>Add a car photo</b>Take a photo or pick one from your gallery.</div>
+      <img id="preview" alt="Selected car"><div class="vf"><i></i><i></i><i></i><i></i></div><div class="scan" id="scan"></div>
+    </div>
+    <div class="actions"><button class="btn" id="camBtn">Take photo</button><button class="btn" id="galBtn">Choose photo</button></div>
+    <input type="file" id="camIn" accept="image/*" capture="environment" hidden>
+    <input type="file" id="galIn" accept="image/*" hidden>
+    <button class="btn primary" id="goBtn" disabled>Identify car</button>
+    <div class="error" id="error" role="alert"></div>
+
+    <article class="card result" id="result" aria-live="polite">
+      <div class="band"></div>
+      <div class="body">
+        <div class="make" id="rMake"></div><div class="model" id="rModel"></div>
+        <div class="colorrow"><div class="dot"></div><div><div id="rColor" style="font-weight:600"></div><div class="note" id="rHex" style="margin:0"></div></div></div>
+        <div class="grid">
+          <div class="tile"><span>Body type</span><b id="rBody"></b></div><div class="tile"><span>Likely years</span><b id="rYears"></b></div>
+          <div class="tile"><span>Made in</span><b id="rOrigin"></b></div><div class="tile"><span>Segment</span><b id="rSegment"></b></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:16px;font-size:13px"><span style="color:var(--muted)">Confidence</span><b id="rConfText"></b></div>
+        <div class="conf"><i id="rConf"></i></div>
+        <div id="altBox"><h3>Other possible matches</h3><div id="alts"></div></div>
+        <div class="rowbtns"><button class="btn" id="shareBtn">Share result</button><button class="btn" id="copyBtn">Copy details</button></div>
+        <p class="note">AI estimates can be wrong, especially for similar trims and model years.</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="hist" id="histView">
+    <div class="hh"><h2>History</h2><button class="link" id="clearAll">Clear all</button></div>
+    <div id="histList"></div>
+  </section>
+</main>
+
+<nav class="tabs" role="tablist">
+  <button class="tab" role="tab" id="tabScan" aria-selected="true"><span>◎</span>Scan</button>
+  <button class="tab" role="tab" id="tabHist" aria-selected="false"><span>☰</span>History</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<dialog id="settings">
+  <h2 style="margin:0 0 4px;font-size:18px">Settings</h2>
+  <div class="note" style="margin:0">Your key is stored only on this device.</div>
+  <label for="key">Gemini API key</label><input type="password" id="key" autocomplete="off" placeholder="AIza...">
+  <label for="model">Model</label><input type="text" id="model" placeholder="gemini-2.5-flash">
+  <div class="row"><button class="btn" id="closeSettings">Cancel</button><button class="btn primary" id="saveSettings" style="width:auto">Save</button></div>
+</dialog>
+
+<script>
+const $ = id => document.getElementById(id);
+const store = { get:k=>{try{return localStorage.getItem(k)}catch(e){return null}}, set:(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}} };
+let imageB64 = null, thumb = null, current = null;
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+
+const toast = m => { const t=$("toast"); t.textContent=m; t.style.display="block"; setTimeout(()=>t.style.display="none",2200); };
+const showError = m => { $("error").textContent = m; $("error").style.display = m ? "block" : "none"; };
+
+/* Tabs */
+function tab(name){
+  $("scanView").style.display = name==="scan" ? "block":"none"; $("histView").style.display = name==="hist" ? "block":"none";
+  $("tabScan").setAttribute("aria-selected", name==="scan"); $("tabHist").setAttribute("aria-selected", name==="hist");
+  if (name==="hist") renderHistory(); scrollTo(0,0);
+}
+$("tabScan").onclick = () => tab("scan"); $("tabHist").onclick = () => tab("hist");
+
+/* Photo input */
+$("camBtn").onclick = () => $("camIn").click(); $("galBtn").onclick = () => $("galIn").click();
+[$("camIn"),$("galIn")].forEach(i => i.onchange = e => e.target.files[0] && load(e.target.files[0]));
+function shrink(img,max){const s=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=img.width*s;c.height=img.height*s;c.getContext("2d").drawImage(img,0,0,c.width,c.height);return c.toDataURL("image/jpeg",.85)}
+function load(file){
+  const img=new Image(), url=URL.createObjectURL(file);
+  img.onload=()=>{ const d=shrink(img,1024); imageB64=d.split(",")[1]; thumb=shrink(img,160);
+    $("preview").src=d; $("preview").style.display="block"; $("empty").style.display="none";
+    $("goBtn").disabled=false; $("result").style.display="none"; showError(""); URL.revokeObjectURL(url); };
+  img.src=url;
+}
+
+/* Gemini */
+const PROMPT = `You are a vehicle recognition expert. Look at the main car in the image and respond with JSON only:
+{"is_car":boolean,"make":string,"model":string,"year_range":string,"body_type":string,"color_name":string,"color_hex":string,"confidence":number,"origin_country":string,"segment":string,"alternatives":[{"make":string,"model":string,"confidence":number}]}
+Rules: confidence values are 0-1. color_name is the visible paint colour in plain words. color_hex is the paint colour as #RRGGBB ignoring reflections. segment is e.g. "Compact SUV", "Luxury sedan", "Hatchback". origin_country is the brand's home country. alternatives has up to 2 other plausible make/model matches, or [] if you are sure. If no car is visible set is_car false and other fields to "" or [].`;
+
+$("goBtn").onclick = async () => {
+  const key = store.get("gemini_key");
+  if (!key) { showError("Add your Gemini API key in Settings first."); $("settings").showModal(); return; }
+  const model = store.get("gemini_model") || "gemini-2.5-flash";
+  $("goBtn").disabled=true; $("scan").style.display="block"; showError(""); $("result").style.display="none";
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{
+      method:"POST", headers:{"Content-Type":"application/json","x-goog-api-key":key},
+      body:JSON.stringify({contents:[{parts:[{text:PROMPT},{inline_data:{mime_type:"image/jpeg",data:imageB64}}]}],generationConfig:{responseMimeType:"application/json",temperature:0.2}})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `Request failed (${res.status})`);
+    const text = data.candidates?.[0]?.content?.parts?.map(p=>p.text||"").join("")||"";
+    const r = JSON.parse(text.replace(/```json|```/g,"").trim());
+    render(r); if (r.is_car) saveHistory(r);
+  } catch(err){ showError(err instanceof SyntaxError ? "Could not read the AI response. Try again." : err.message); }
+  finally { $("goBtn").disabled=false; $("scan").style.display="none"; }
+};
+
+const hexOf = r => /^#[0-9a-f]{6}$/i.test(r.color_hex) ? r.color_hex : "#c7ced6";
+function render(r){
+  if (!r.is_car){ showError("No car found in this photo. Try a clearer, closer shot."); return; }
+  current = r; document.documentElement.style.setProperty("--swatch", hexOf(r));
+  $("rMake").textContent=r.make; $("rModel").textContent=r.model; $("rColor").textContent=r.color_name; $("rHex").textContent=hexOf(r).toUpperCase();
+  $("rBody").textContent=r.body_type||"–"; $("rYears").textContent=r.year_range||"–"; $("rOrigin").textContent=r.origin_country||"–"; $("rSegment").textContent=r.segment||"–";
+  const pct=Math.round((Number(r.confidence)||0)*100); $("rConfText").textContent=pct+"%"; $("rConf").style.width=pct+"%";
+  const alts=(r.alternatives||[]).filter(a=>a&&a.model);
+  $("altBox").style.display=alts.length?"block":"none";
+  $("alts").innerHTML=""; alts.forEach(a=>{const d=document.createElement("div");d.className="alt";
+    const n=document.createElement("span");n.textContent=`${a.make} ${a.model}`;const p=document.createElement("em");p.textContent=Math.round((Number(a.confidence)||0)*100)+"%";d.append(n,p);$("alts").append(d)});
+  $("result").style.display="block"; $("result").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+/* Feature 1: history */
+const getHist = () => { try { return JSON.parse(store.get("history")||"[]"); } catch(e){ return []; } };
+function saveHistory(r){ const h=getHist(); h.unshift({id:Date.now(),thumb,r}); while(h.length>30)h.pop(); if(!store.set("history",JSON.stringify(h))){h.length=10;store.set("history",JSON.stringify(h));} }
+function renderHistory(){
+  const h=getHist(), box=$("histList"); box.innerHTML="";
+  if(!h.length){ box.innerHTML='<div class="empty"><b>No scans yet</b>Identified cars will appear here.</div>'; return; }
+  h.forEach(it=>{
+    const el=document.createElement("div"); el.className="card hitem";
+    const img=document.createElement("img"); img.src=it.thumb||""; img.alt="";
+    const t=document.createElement("div"); t.className="t"; const b=document.createElement("b"); b.textContent=`${it.r.make} ${it.r.model}`;
+    const s=document.createElement("small"); s.textContent=`${it.r.color_name} · ${new Date(it.id).toLocaleDateString()}`; t.append(b,s);
+    const sw=document.createElement("div"); sw.className="sw"; sw.style.background=hexOf(it.r);
+    const del=document.createElement("button"); del.className="del"; del.textContent="✕"; del.setAttribute("aria-label","Delete");
+    del.onclick=e=>{e.stopPropagation(); store.set("history",JSON.stringify(getHist().filter(x=>x.id!==it.id))); renderHistory();};
+    el.onclick=()=>{ if(it.thumb){$("preview").src=it.thumb;$("preview").style.display="block";$("empty").style.display="none";} render(it.r); tab("scan"); };
+    el.append(img,t,sw,del); box.append(el);
+  });
+}
+$("clearAll").onclick=()=>{ if(confirm("Delete all saved scans?")){ store.set("history","[]"); renderHistory(); } };
+
+/* Features 2 & 3: share + copy */
+const summary = r => `${r.make} ${r.model} (${r.year_range||"year unknown"})\nColour: ${r.color_name} ${hexOf(r).toUpperCase()}\nBody: ${r.body_type||"–"} · ${r.segment||"–"}\nMade by: ${r.origin_country||"–"}\nConfidence: ${Math.round((Number(r.confidence)||0)*100)}%\nIdentified with CarLens`;
+$("shareBtn").onclick=async()=>{ if(!current)return; if(navigator.share){ try{await navigator.share({title:"CarLens result",text:summary(current)});}catch(e){} } else { await copy(); } };
+async function copy(){ try{ await navigator.clipboard.writeText(summary(current)); toast("Copied to clipboard"); }catch(e){ toast("Copy not supported here"); } }
+$("copyBtn").onclick=()=>current&&copy();
+
+/* Settings */
+$("openSettings").onclick=()=>{ $("key").value=store.get("gemini_key")||""; $("model").value=store.get("gemini_model")||""; $("settings").showModal(); };
+$("closeSettings").onclick=()=>$("settings").close();
+$("saveSettings").onclick=()=>{ store.set("gemini_key",$("key").value.trim()); store.set("gemini_model",$("model").value.trim()); $("settings").close(); toast("Settings saved"); };
+</script>
+</body>
+</html>
